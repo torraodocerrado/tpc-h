@@ -1,8 +1,5 @@
--- using 1438354021 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Product Type Profit Measure Query (Q9)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372631 as a seed to the RNG
+/* TPC-H/TPC-R Product Type Profit Measure Query (Q9) */
 
 
 select
@@ -29,7 +26,7 @@ from
 			and p_partkey = l_partkey
 			and o_orderkey = l_orderkey
 			and s_nationkey = n_nationkey
-			and p_name like '%drab%'
+			and p_name like '%steel%'
 	) profit
 group by
 	nation,

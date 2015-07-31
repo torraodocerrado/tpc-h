@@ -1,8 +1,5 @@
--- using 1438354023 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Top Supplier Query (Q15)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372634 as a seed to the RNG
+/* TPC-H/TPC-R Top Supplier Query (Q15) */
 
 create view revenue0 (supplier_no, total_revenue) as
 	select
@@ -11,8 +8,8 @@ create view revenue0 (supplier_no, total_revenue) as
 	from
 		h_lineitem
 	where
-		l_shipdate >= date '1993-04-01'
-		and l_shipdate < date '1993-04-01' + interval '3' month
+		l_shipdate >= date '1994-07-01'
+		and l_shipdate < date '1994-07-01' + interval '3' month
 	group by
 		l_suppkey;
 

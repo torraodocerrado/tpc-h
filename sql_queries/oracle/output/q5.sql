@@ -1,8 +1,5 @@
--- using 1438354020 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Local Supplier Volume Query (Q5)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372630 as a seed to the RNG
+/* TPC-H/TPC-R Local Supplier Volume Query (Q5) */
 
 
 select
@@ -22,9 +19,9 @@ where
 	and c_nationkey = s_nationkey
 	and s_nationkey = n_nationkey
 	and n_regionkey = r_regionkey
-	and r_name = 'MIDDLE EAST'
-	and o_orderdate >= date '1997-01-01'
-	and o_orderdate < date '1997-01-01' + interval '1' year
+	and r_name = 'EUROPE'
+	and o_orderdate >= date '1994-01-01'
+	and o_orderdate < date '1994-01-01' + interval '1' year
 group by
 	n_name
 order by

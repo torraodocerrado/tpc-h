@@ -1,8 +1,5 @@
--- using 1438354019 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Shipping Priority Query (Q3)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372629 as a seed to the RNG
+/* TPC-H/TPC-R Shipping Priority Query (Q3) */
 
 
 select
@@ -15,11 +12,11 @@ from
 	h_order,
 	h_lineitem
 where
-	c_mktsegment = 'FURNITURE'
+	c_mktsegment = 'AUTOMOBILE'
 	and c_custkey = o_custkey
 	and l_orderkey = o_orderkey
-	and o_orderdate < date '1995-03-04'
-	and l_shipdate > date '1995-03-04'
+	and o_orderdate < date '1995-03-29'
+	and l_shipdate > date '1995-03-29'
 group by
 	l_orderkey,
 	o_orderdate,

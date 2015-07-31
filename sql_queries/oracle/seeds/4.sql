@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Order Priority Checking Query (Q4)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Order Priority Checking Query (Q4) */
 :x
 :o
 select

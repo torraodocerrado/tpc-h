@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Important Stock Identification Query (Q11)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Important Stock Identification Query (Q11) */
 :x
 :o
 select

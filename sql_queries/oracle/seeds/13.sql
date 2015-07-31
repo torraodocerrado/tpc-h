@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Customer Distribution Query (Q13)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Customer Distribution Query (Q13) */
 :x
 :o
 select

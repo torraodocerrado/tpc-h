@@ -1,8 +1,5 @@
--- using 1438354024 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Small-Quantity-Order Revenue Query (Q17)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372635 as a seed to the RNG
+/* TPC-H/TPC-R Small-Quantity-Order Revenue Query (Q17) */
 
 
 select
@@ -12,7 +9,7 @@ from
 	h_part
 where
 	p_partkey = l_partkey
-	and p_brand = 'Brand#11'
+	and p_brand = 'Brand#25'
 	and p_container = 'LG PACK'
 	and l_quantity < (
 		select

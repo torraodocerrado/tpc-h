@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Large Volume Customer Query (Q18)
--- Function Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Large Volume Customer Query (Q18) */
 :x
 :o
 select

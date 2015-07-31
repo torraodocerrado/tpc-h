@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Shipping Modes and Order Priority Query (Q12)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Shipping Modes and Order Priority Query (Q12) */
 :x
 :o
 select

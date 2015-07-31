@@ -1,8 +1,5 @@
--- using 1438354023 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Customer Distribution Query (Q13)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372633 as a seed to the RNG
+/* TPC-H/TPC-R Customer Distribution Query (Q13) */
 
 
 select
@@ -16,7 +13,7 @@ from
 		from
 			h_customer left outer join h_order on
 				c_custkey = o_custkey
-				and o_comment not like '%pending%deposits%'
+				and o_comment not like '%unusual%deposits%'
 		group by
 			c_custkey
 	) c_orders

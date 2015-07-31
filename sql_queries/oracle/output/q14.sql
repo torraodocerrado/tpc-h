@@ -1,8 +1,5 @@
--- using 1438354023 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Promotion Effect Query (Q14)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372633 as a seed to the RNG
+/* TPC-H/TPC-R Promotion Effect Query (Q14) */
 
 
 select
@@ -16,7 +13,7 @@ from
 	h_part
 where
 	l_partkey = p_partkey
-	and l_shipdate >= date '1997-03-01'
-	and l_shipdate < date '1997-03-01' + interval '1' month;
+	and l_shipdate >= date '1996-10-01'
+	and l_shipdate < date '1996-10-01' + interval '1' month;
 
 	

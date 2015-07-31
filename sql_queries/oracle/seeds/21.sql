@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Suppliers Who Kept Orders Waiting Query (Q21)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Suppliers Who Kept Orders Waiting Query (Q21) */
 :x
 :o
 select

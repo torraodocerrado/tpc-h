@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Discounted Revenue Query (Q19)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Discounted Revenue Query (Q19) */
 :x
 :o
 select

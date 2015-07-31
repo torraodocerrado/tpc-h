@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Shipping Priority Query (Q3)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Shipping Priority Query (Q3) */
 :x
 :o
 select

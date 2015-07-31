@@ -1,9 +1,4 @@
--- using 1438354018 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Pricing Summary Report Query (Q1)
--- Functional Query Definition
--- Approved February 1998
-
+/* TPC-H/TPC-R Pricing Summary Report Query (Q1) */
 
 select
 	l_returnflag,
@@ -19,7 +14,7 @@ select
 from
 	h_lineitem
 where
-	l_shipdate <= date '1998-12-01' - interval '65' day (3)
+	l_shipdate <= date '1998-12-01' - interval '60' day (3)
 group by
 	l_returnflag,
 	l_linestatus

@@ -1,8 +1,5 @@
--- using 1438354026 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Global Sales Opportunity Query (Q22)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372637 as a seed to the RNG
+/* TPC-H/TPC-R Global Sales Opportunity Query (Q22) */
 
 
 select
@@ -18,7 +15,7 @@ from
 			h_customer
 		where
 			SUBSTR(c_phone , 1, 2) in
-				('21', '14', '26', '27', '32', '17', '30')
+				('32', '22', '26', '20', '23', '18', '33')
 			and c_acctbal > (
 				select
 					avg(c_acctbal)
@@ -27,7 +24,7 @@ from
 				where
 					c_acctbal > 0.00
 					and SUBSTR(c_phone , 1, 2) in
-						('21', '14', '26', '27', '32', '17', '30')
+						('32', '22', '26', '20', '23', '18', '33')
 			)
 			and not exists (
 				select

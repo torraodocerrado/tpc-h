@@ -1,8 +1,5 @@
--- using 1438354022 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Important Stock Identification Query (Q11)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372632 as a seed to the RNG
+/* TPC-H/TPC-R Important Stock Identification Query (Q11) */
 
 
 select
@@ -15,7 +12,7 @@ from
 where
 	ps_suppkey = s_suppkey
 	and s_nationkey = n_nationkey
-	and n_name = 'VIETNAM'
+	and n_name = 'EGYPT'
 group by
 	ps_partkey having
 		sum(ps_supplycost * ps_availqty) > (
@@ -28,7 +25,7 @@ group by
 			where
 				ps_suppkey = s_suppkey
 				and s_nationkey = n_nationkey
-				and n_name = 'VIETNAM'
+				and n_name = 'EGYPT'
 		)
 order by
 	value desc;

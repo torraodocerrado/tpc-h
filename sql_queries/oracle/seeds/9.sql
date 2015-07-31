@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Product Type Profit Measure Query (Q9)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Product Type Profit Measure Query (Q9) */
 :x
 :o
 select

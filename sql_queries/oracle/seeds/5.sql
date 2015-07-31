@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Local Supplier Volume Query (Q5)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Local Supplier Volume Query (Q5) */
 :x
 :o
 select

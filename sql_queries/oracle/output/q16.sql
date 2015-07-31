@@ -1,8 +1,5 @@
--- using 1438354024 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Parts/Supplier Relationship Query (Q16)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372634 as a seed to the RNG
+/* TPC-H/TPC-R Parts/Supplier Relationship Query (Q16) */
 
 
 select
@@ -15,9 +12,9 @@ from
 	h_part
 where
 	p_partkey = ps_partkey
-	and p_brand <> 'Brand#21'
-	and p_type not like 'STANDARD POLISHED%'
-	and p_size in (16, 17, 22, 2, 4, 48, 33, 37)
+	and p_brand <> 'Brand#22'
+	and p_type not like 'MEDIUM BRUSHED%'
+	and p_size in (13, 38, 14, 11, 36, 10, 39, 3)
 	and ps_suppkey not in (
 		select
 			s_suppkey

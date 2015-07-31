@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Parts/Supplier Relationship Query (Q16)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Parts/Supplier Relationship Query (Q16) */
 :x
 :o
 select

@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Promotion Effect Query (Q14)
--- Functional Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Promotion Effect Query (Q14) */
 :x
 :o
 select

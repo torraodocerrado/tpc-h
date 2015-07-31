@@ -1,8 +1,5 @@
--- using 1438354019 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Order Priority Checking Query (Q4)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372630 as a seed to the RNG
+/* TPC-H/TPC-R Order Priority Checking Query (Q4) */
 
 
 select
@@ -11,8 +8,8 @@ select
 from
 	h_order
 where
-	o_orderdate >= date '1993-08-01'
-	and o_orderdate < date '1993-08-01' + interval '3' month
+	o_orderdate >= date '1995-03-01'
+	and o_orderdate < date '1995-03-01' + interval '3' month
 	and exists (
 		select
 			*

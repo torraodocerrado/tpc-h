@@ -1,8 +1,5 @@
--- using 1438354026 as a seed to the RNG
--- $ID$
--- TPC-H/TPC-R Suppliers Who Kept Orders Waiting Query (Q21)
--- Functional Query Definition
--- Approved February 1998
+-- using 1438372636 as a seed to the RNG
+/* TPC-H/TPC-R Suppliers Who Kept Orders Waiting Query (Q21) */
 
 
 select
@@ -38,7 +35,7 @@ where
 			and l3.l_receiptdate > l3.l_commitdate
 	)
 	and s_nationkey = n_nationkey
-	and n_name = 'ROMANIA'
+	and n_name = 'MOROCCO'
 group by
 	s_name
 order by

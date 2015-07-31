@@ -1,7 +1,4 @@
--- $ID$
--- TPC-H/TPC-R Potential Part Promotion Query (Q20)
--- Function Query Definition
--- Approved February 1998
+/* TPC-H/TPC-R Potential Part Promotion Query (Q20) */
 :x
 :o
 select
