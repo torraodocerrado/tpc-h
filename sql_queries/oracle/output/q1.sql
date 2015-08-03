@@ -1,5 +1,4 @@
 /* TPC-H/TPC-R Pricing Summary Report Query (Q1) */
-
 select
 	l_returnflag,
 	l_linestatus,

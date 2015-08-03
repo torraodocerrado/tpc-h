@@ -1,4 +1,3 @@
--- using 1438372633 as a seed to the RNG
 /* TPC-H/TPC-R Shipping Modes and Order Priority Query (Q12) */
 
 

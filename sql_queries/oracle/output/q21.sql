@@ -1,4 +1,3 @@
--- using 1438372636 as a seed to the RNG
 /* TPC-H/TPC-R Suppliers Who Kept Orders Waiting Query (Q21) */
 
 

@@ -1,4 +1,3 @@
--- using 1438372630 as a seed to the RNG
 /* TPC-H/TPC-R Local Supplier Volume Query (Q5) */
 
 

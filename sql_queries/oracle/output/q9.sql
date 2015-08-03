@@ -1,4 +1,3 @@
--- using 1438372631 as a seed to the RNG
 /* TPC-H/TPC-R Product Type Profit Measure Query (Q9) */
 
 

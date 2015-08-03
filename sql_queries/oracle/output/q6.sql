@@ -1,4 +1,3 @@
--- using 1438372630 as a seed to the RNG
 /* TPC-H/TPC-R Forecasting Revenue Change Query (Q6) */
 
 

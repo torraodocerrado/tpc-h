@@ -1,4 +1,3 @@
--- using 1438372629 as a seed to the RNG
 /* TPC-H/TPC-R Minimum Cost Supplier Query (Q2) */
 
 

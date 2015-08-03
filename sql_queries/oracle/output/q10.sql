@@ -1,4 +1,3 @@
--- using 1438372632 as a seed to the RNG
 /* TPC-H/TPC-R Returned Item Reporting Query (Q10) */
 
 

@@ -1,4 +1,3 @@
--- using 1438372634 as a seed to the RNG
 /* TPC-H/TPC-R Parts/Supplier Relationship Query (Q16) */
 
 

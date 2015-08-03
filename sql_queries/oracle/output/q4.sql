@@ -1,6 +1,4 @@
--- using 1438372630 as a seed to the RNG
 /* TPC-H/TPC-R Order Priority Checking Query (Q4) */
-
 
 select
 	o_orderpriority,

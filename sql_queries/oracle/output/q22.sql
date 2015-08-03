@@ -1,4 +1,3 @@
--- using 1438372637 as a seed to the RNG
 /* TPC-H/TPC-R Global Sales Opportunity Query (Q22) */
 
 
