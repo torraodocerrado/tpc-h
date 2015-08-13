@@ -1,0 +1,1100 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.3.2
+-- Dumped by pg_dump version 9.3.2
+-- Started on 2015-08-13 13:43:15
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 2120 (class 1262 OID 257631)
+-- Name: pg_tpch_1gb; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE pg_tpch_1gb WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'Portuguese_Brazil.1252' LC_CTYPE = 'Portuguese_Brazil.1252';
+
+
+ALTER DATABASE pg_tpch_1gb OWNER TO postgres;
+
+\connect pg_tpch_1gb
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 7 (class 2615 OID 3773599)
+-- Name: agent; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA agent;
+
+
+ALTER SCHEMA agent OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 3079 OID 11750)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2123 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = agent, pg_catalog;
+
+--
+-- TOC entry 215 (class 1255 OID 3773600)
+-- Name: limpa_estatisticas(); Type: FUNCTION; Schema: agent; Owner: postgres
+--
+
+CREATE FUNCTION limpa_estatisticas() RETURNS boolean
+    LANGUAGE sql
+    AS $$
+  delete from agent.tb_access_plan;
+  delete from agent.tb_candidate_view;
+  delete from agent.tb_workload;
+  delete from agent.tb_task_indexes;
+  delete from agent.tb_candidate_index_column;
+  delete from agent.tb_candidate_index;
+  delete from agent.tb_epoque;
+  delete from agent.tb_profits;
+  delete from agent.tb_task_indexes;
+  select true;
+  $$;
+
+
+ALTER FUNCTION agent.limpa_estatisticas() OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 187 (class 1259 OID 3773601)
+-- Name: tb_access_plan; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_access_plan (
+    wld_id integer NOT NULL,
+    apl_id_seq integer NOT NULL,
+    apl_text_line character varying(10000)
+);
+
+
+ALTER TABLE agent.tb_access_plan OWNER TO postgres;
+
+--
+-- TOC entry 188 (class 1259 OID 3773607)
+-- Name: tb_candidate_index; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_candidate_index (
+    cid_id integer NOT NULL,
+    cid_table_name character varying(100) NOT NULL,
+    cid_index_profit integer DEFAULT 0 NOT NULL,
+    cid_creation_cost integer DEFAULT 0 NOT NULL,
+    cid_status character(1),
+    cid_type character(1),
+    cid_initial_profit integer,
+    cid_fragmentation_level integer
+);
+
+
+ALTER TABLE agent.tb_candidate_index OWNER TO postgres;
+
+--
+-- TOC entry 189 (class 1259 OID 3773612)
+-- Name: tb_candidate_index_column; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_candidate_index_column (
+    cid_id integer NOT NULL,
+    cic_column_name character(100) NOT NULL,
+    cic_type character(100)
+);
+
+
+ALTER TABLE agent.tb_candidate_index_column OWNER TO postgres;
+
+--
+-- TOC entry 190 (class 1259 OID 3773615)
+-- Name: tb_candidate_view; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_candidate_view (
+    cmv_id integer NOT NULL,
+    cmv_ddl_create text NOT NULL,
+    cmv_cost bigint,
+    cmv_profit bigint NOT NULL,
+    cmv_status character(1) DEFAULT 'H'::bpchar
+);
+ALTER TABLE ONLY tb_candidate_view ALTER COLUMN cmv_id SET STATISTICS 0;
+ALTER TABLE ONLY tb_candidate_view ALTER COLUMN cmv_profit SET STATISTICS 0;
+
+
+ALTER TABLE agent.tb_candidate_view OWNER TO postgres;
+
+--
+-- TOC entry 2124 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: TABLE tb_candidate_view; Type: COMMENT; Schema: agent; Owner: postgres
+--
+
+COMMENT ON TABLE tb_candidate_view IS 'Possiveis valores:
+  H: Hipotetico
+  R: Real';
+
+
+--
+-- TOC entry 2125 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN tb_candidate_view.cmv_status; Type: COMMENT; Schema: agent; Owner: postgres
+--
+
+COMMENT ON COLUMN tb_candidate_view.cmv_status IS 'Possiveis valores:
+  H: Hipotetico
+  R: Real
+  M: Materializar';
+
+
+--
+-- TOC entry 191 (class 1259 OID 3773622)
+-- Name: tb_epoque; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_epoque (
+    epq_id integer NOT NULL,
+    epq_start integer NOT NULL,
+    epq_end integer NOT NULL
+);
+
+
+ALTER TABLE agent.tb_epoque OWNER TO postgres;
+
+--
+-- TOC entry 192 (class 1259 OID 3773625)
+-- Name: tb_profits; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_profits (
+    cid_id integer NOT NULL,
+    pro_timestamp integer NOT NULL,
+    pro_profit integer NOT NULL,
+    wld_id integer NOT NULL,
+    pro_type character(1)
+);
+
+
+ALTER TABLE agent.tb_profits OWNER TO postgres;
+
+--
+-- TOC entry 193 (class 1259 OID 3773628)
+-- Name: tb_task_indexes; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_task_indexes (
+    wld_id integer NOT NULL,
+    cid_id integer NOT NULL
+);
+
+
+ALTER TABLE agent.tb_task_indexes OWNER TO postgres;
+
+--
+-- TOC entry 194 (class 1259 OID 3773631)
+-- Name: tb_workload; Type: TABLE; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE tb_workload (
+    wld_id integer NOT NULL,
+    wld_sql character varying(10000) NOT NULL,
+    wld_plan character varying(10000) NOT NULL,
+    wld_capture_count integer DEFAULT 0 NOT NULL,
+    wld_analyze_count integer DEFAULT 0 NOT NULL,
+    wld_type character(1),
+    wld_relevance integer
+);
+
+
+ALTER TABLE agent.tb_workload OWNER TO postgres;
+
+--
+-- TOC entry 195 (class 1259 OID 3773639)
+-- Name: tb_workload_wld_id_seq; Type: SEQUENCE; Schema: agent; Owner: postgres
+--
+
+CREATE SEQUENCE tb_workload_wld_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE agent.tb_workload_wld_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2126 (class 0 OID 0)
+-- Dependencies: 195
+-- Name: tb_workload_wld_id_seq; Type: SEQUENCE OWNED BY; Schema: agent; Owner: postgres
+--
+
+ALTER SEQUENCE tb_workload_wld_id_seq OWNED BY tb_workload.wld_id;
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 171 (class 1259 OID 257632)
+-- Name: customer; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE customer (
+    c_custkey integer NOT NULL,
+    c_name character varying(25),
+    c_address character varying(40),
+    c_nationkey bigint NOT NULL,
+    c_phone character(15),
+    c_acctbal numeric,
+    c_mktsegment character(10),
+    c_comment character varying(117)
+);
+
+
+ALTER TABLE public.customer OWNER TO postgres;
+
+--
+-- TOC entry 172 (class 1259 OID 257638)
+-- Name: customer_c_custkey_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE customer_c_custkey_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.customer_c_custkey_seq OWNER TO postgres;
+
+--
+-- TOC entry 2127 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: customer_c_custkey_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE customer_c_custkey_seq OWNED BY customer.c_custkey;
+
+
+--
+-- TOC entry 173 (class 1259 OID 257640)
+-- Name: lineitem; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE lineitem (
+    l_orderkey bigint NOT NULL,
+    l_partkey bigint NOT NULL,
+    l_suppkey bigint NOT NULL,
+    l_linenumber integer NOT NULL,
+    l_quantity numeric,
+    l_extendedprice numeric,
+    l_discount numeric,
+    l_tax numeric,
+    l_returnflag character(1),
+    l_linestatus character(1),
+    l_shipdate date,
+    l_commitdate date,
+    l_receiptdate date,
+    l_shipinstruct character(25),
+    l_shipmode character(10),
+    l_comment character varying(44)
+);
+
+
+ALTER TABLE public.lineitem OWNER TO postgres;
+
+--
+-- TOC entry 174 (class 1259 OID 257646)
+-- Name: nation; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE nation (
+    n_nationkey integer NOT NULL,
+    n_name character(25),
+    n_regionkey bigint NOT NULL,
+    n_comment character varying(152)
+);
+
+
+ALTER TABLE public.nation OWNER TO postgres;
+
+--
+-- TOC entry 175 (class 1259 OID 257649)
+-- Name: nation_n_nationkey_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE nation_n_nationkey_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.nation_n_nationkey_seq OWNER TO postgres;
+
+--
+-- TOC entry 2128 (class 0 OID 0)
+-- Dependencies: 175
+-- Name: nation_n_nationkey_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE nation_n_nationkey_seq OWNED BY nation.n_nationkey;
+
+
+--
+-- TOC entry 176 (class 1259 OID 257651)
+-- Name: orders; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE orders (
+    o_orderkey integer NOT NULL,
+    o_custkey bigint NOT NULL,
+    o_orderstatus character(1),
+    o_totalprice numeric,
+    o_orderdate date,
+    o_orderpriority character(15),
+    o_clerk character(15),
+    o_shippriority integer,
+    o_comment character varying(79)
+);
+
+
+ALTER TABLE public.orders OWNER TO postgres;
+
+--
+-- TOC entry 177 (class 1259 OID 257657)
+-- Name: orders_o_orderkey_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE orders_o_orderkey_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_o_orderkey_seq OWNER TO postgres;
+
+--
+-- TOC entry 2129 (class 0 OID 0)
+-- Dependencies: 177
+-- Name: orders_o_orderkey_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE orders_o_orderkey_seq OWNED BY orders.o_orderkey;
+
+
+--
+-- TOC entry 178 (class 1259 OID 257659)
+-- Name: part; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE part (
+    p_partkey integer NOT NULL,
+    p_name character varying(55),
+    p_mfgr character(25),
+    p_brand character(10),
+    p_type character varying(25),
+    p_size integer,
+    p_container character(10),
+    p_retailprice numeric,
+    p_comment character varying(23)
+);
+
+
+ALTER TABLE public.part OWNER TO postgres;
+
+--
+-- TOC entry 179 (class 1259 OID 257665)
+-- Name: part_p_partkey_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE part_p_partkey_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.part_p_partkey_seq OWNER TO postgres;
+
+--
+-- TOC entry 2130 (class 0 OID 0)
+-- Dependencies: 179
+-- Name: part_p_partkey_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE part_p_partkey_seq OWNED BY part.p_partkey;
+
+
+--
+-- TOC entry 180 (class 1259 OID 257667)
+-- Name: partsupp; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE partsupp (
+    ps_partkey bigint NOT NULL,
+    ps_suppkey bigint NOT NULL,
+    ps_availqty integer,
+    ps_supplycost numeric,
+    ps_comment character varying(199)
+);
+
+
+ALTER TABLE public.partsupp OWNER TO postgres;
+
+--
+-- TOC entry 181 (class 1259 OID 257673)
+-- Name: region; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE region (
+    r_regionkey integer NOT NULL,
+    r_name character(25),
+    r_comment character varying(152)
+);
+
+
+ALTER TABLE public.region OWNER TO postgres;
+
+--
+-- TOC entry 182 (class 1259 OID 257676)
+-- Name: region_r_regionkey_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE region_r_regionkey_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.region_r_regionkey_seq OWNER TO postgres;
+
+--
+-- TOC entry 2131 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: region_r_regionkey_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE region_r_regionkey_seq OWNED BY region.r_regionkey;
+
+
+--
+-- TOC entry 183 (class 1259 OID 257678)
+-- Name: supplier; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE supplier (
+    s_suppkey integer NOT NULL,
+    s_name character(25),
+    s_address character varying(40),
+    s_nationkey bigint NOT NULL,
+    s_phone character(15),
+    s_acctbal numeric,
+    s_comment character varying(101)
+);
+
+
+ALTER TABLE public.supplier OWNER TO postgres;
+
+--
+-- TOC entry 184 (class 1259 OID 257684)
+-- Name: supplier_s_suppkey_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE supplier_s_suppkey_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.supplier_s_suppkey_seq OWNER TO postgres;
+
+--
+-- TOC entry 2132 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: supplier_s_suppkey_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE supplier_s_suppkey_seq OWNED BY supplier.s_suppkey;
+
+
+--
+-- TOC entry 196 (class 1259 OID 3829686)
+-- Name: teste; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE MATERIALIZED VIEW teste AS
+ SELECT lineitem.l_returnflag,
+    lineitem.l_linestatus,
+    sum(lineitem.l_quantity) AS sum_qty,
+    sum(lineitem.l_extendedprice) AS sum_base_price,
+    sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) AS sum_disc_price,
+    sum(((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount)) * ((1)::numeric + lineitem.l_tax))) AS sum_charge,
+    avg(lineitem.l_quantity) AS avg_qty,
+    avg(lineitem.l_extendedprice) AS avg_price,
+    avg(lineitem.l_discount) AS avg_disc,
+    count(*) AS count_order,
+    lineitem.l_shipdate
+   FROM lineitem
+  GROUP BY lineitem.l_returnflag, lineitem.l_linestatus, lineitem.l_quantity, lineitem.l_extendedprice, lineitem.l_discount, lineitem.l_tax, lineitem.l_shipdate
+  ORDER BY lineitem.l_returnflag, lineitem.l_linestatus
+  WITH NO DATA;
+
+
+ALTER TABLE public.teste OWNER TO postgres;
+
+--
+-- TOC entry 197 (class 1259 OID 3829928)
+-- Name: tpc_h_query_1; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE MATERIALIZED VIEW tpc_h_query_1 AS
+ SELECT lineitem.l_returnflag,
+    lineitem.l_linestatus,
+    sum(lineitem.l_quantity) AS sum_qty,
+    sum(lineitem.l_extendedprice) AS sum_base_price,
+    sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) AS sum_disc_price,
+    sum(((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount)) * ((1)::numeric + lineitem.l_tax))) AS sum_charge,
+    avg(lineitem.l_quantity) AS avg_qty,
+    avg(lineitem.l_extendedprice) AS avg_price,
+    avg(lineitem.l_discount) AS avg_disc,
+    count(*) AS count_order,
+    lineitem.l_shipdate
+   FROM lineitem
+  GROUP BY lineitem.l_returnflag, lineitem.l_linestatus, lineitem.l_quantity, lineitem.l_extendedprice, lineitem.l_discount, lineitem.l_tax, lineitem.l_shipdate
+  ORDER BY lineitem.l_returnflag, lineitem.l_linestatus
+  WITH NO DATA;
+
+
+ALTER TABLE public.tpc_h_query_1 OWNER TO postgres;
+
+--
+-- TOC entry 198 (class 1259 OID 3832466)
+-- Name: v_ot_workload_132; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE MATERIALIZED VIEW v_ot_workload_132 AS
+ SELECT nation.n_name,
+    sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) AS revenue,
+    lineitem.l_orderkey,
+    lineitem.l_suppkey,
+    orders.o_orderkey,
+    orders.o_custkey,
+    orders.o_orderdate,
+    customer.c_custkey,
+    customer.c_nationkey,
+    supplier.s_suppkey,
+    supplier.s_nationkey,
+    nation.n_nationkey,
+    nation.n_regionkey,
+    region.r_regionkey,
+    region.r_name
+   FROM customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+  WHERE ((((((customer.c_custkey = orders.o_custkey) AND (lineitem.l_orderkey = orders.o_orderkey)) AND (lineitem.l_suppkey = supplier.s_suppkey)) AND (customer.c_nationkey = supplier.s_nationkey)) AND (supplier.s_nationkey = nation.n_nationkey)) AND (nation.n_regionkey = region.r_regionkey))
+  GROUP BY nation.n_name, lineitem.l_orderkey, lineitem.l_suppkey, lineitem.l_extendedprice, lineitem.l_discount, orders.o_orderkey, orders.o_custkey, orders.o_orderdate, customer.c_custkey, customer.c_nationkey, supplier.s_suppkey, supplier.s_nationkey, nation.n_nationkey, nation.n_regionkey, region.r_regionkey, region.r_name
+  ORDER BY sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) DESC
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_ot_workload_132 OWNER TO postgres;
+
+--
+-- TOC entry 201 (class 1259 OID 3832993)
+-- Name: v_ot_workload_134; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE MATERIALIZED VIEW v_ot_workload_134 AS
+ SELECT lineitem.l_returnflag,
+    lineitem.l_linestatus,
+    sum(lineitem.l_quantity) AS sum_qty,
+    sum(lineitem.l_extendedprice) AS sum_base_price,
+    sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) AS sum_disc_price,
+    sum(((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount)) * ((1)::numeric + lineitem.l_tax))) AS sum_charge,
+    avg(lineitem.l_quantity) AS avg_qty,
+    avg(lineitem.l_extendedprice) AS avg_price,
+    avg(lineitem.l_discount) AS avg_disc,
+    count(*) AS count_order,
+    lineitem.l_shipdate
+   FROM lineitem
+  GROUP BY lineitem.l_returnflag, lineitem.l_linestatus, lineitem.l_quantity, lineitem.l_extendedprice, lineitem.l_discount, lineitem.l_tax, lineitem.l_shipdate
+  ORDER BY lineitem.l_returnflag, lineitem.l_linestatus
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_ot_workload_134 OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1259 OID 3832986)
+-- Name: v_ot_workload_136; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE MATERIALIZED VIEW v_ot_workload_136 AS
+ SELECT sum(lineitem.l_quantity) AS sum_qty,
+    sum(lineitem.l_extendedprice) AS sum_base_price,
+    sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) AS sum_disc_price,
+    sum(((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount)) * ((1)::numeric + lineitem.l_tax))) AS sum_charge,
+    avg(lineitem.l_quantity) AS avg_qty,
+    avg(lineitem.l_extendedprice) AS avg_price,
+    avg(lineitem.l_discount) AS avg_disc,
+    count(*) AS count_order
+   FROM lineitem
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_ot_workload_136 OWNER TO postgres;
+
+--
+-- TOC entry 199 (class 1259 OID 3832978)
+-- Name: v_ot_workload_137; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE MATERIALIZED VIEW v_ot_workload_137 AS
+ SELECT lineitem.l_orderkey,
+    sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) AS revenue,
+    orders.o_orderdate,
+    orders.o_shippriority,
+    lineitem.l_shipdate,
+    orders.o_orderkey,
+    orders.o_custkey,
+    customer.c_custkey,
+    customer.c_mktsegment
+   FROM customer,
+    orders,
+    lineitem
+  WHERE ((customer.c_custkey = orders.o_custkey) AND (lineitem.l_orderkey = orders.o_orderkey))
+  GROUP BY lineitem.l_orderkey, orders.o_orderdate, orders.o_shippriority, lineitem.l_extendedprice, lineitem.l_discount, lineitem.l_shipdate, orders.o_orderkey, orders.o_custkey, customer.c_custkey, customer.c_mktsegment
+  ORDER BY sum((lineitem.l_extendedprice * ((1)::numeric - lineitem.l_discount))) DESC, orders.o_orderdate
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_ot_workload_137 OWNER TO postgres;
+
+--
+-- TOC entry 186 (class 1259 OID 260295)
+-- Name: v_ot_workload_2; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE v_ot_workload_2 (
+    p_brand character(10),
+    p_type character varying(25),
+    p_size integer,
+    supplier_cnt bigint
+);
+
+
+ALTER TABLE public.v_ot_workload_2 OWNER TO postgres;
+
+--
+-- TOC entry 185 (class 1259 OID 258664)
+-- Name: v_test_cutting; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE MATERIALIZED VIEW v_test_cutting AS
+ SELECT orders.o_orderkey,
+    orders.o_custkey,
+    orders.o_comment
+   FROM orders
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_test_cutting OWNER TO postgres;
+
+SET search_path = agent, pg_catalog;
+
+--
+-- TOC entry 1955 (class 2604 OID 3773641)
+-- Name: wld_id; Type: DEFAULT; Schema: agent; Owner: postgres
+--
+
+ALTER TABLE ONLY tb_workload ALTER COLUMN wld_id SET DEFAULT nextval('tb_workload_wld_id_seq'::regclass);
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 1944 (class 2604 OID 257692)
+-- Name: c_custkey; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY customer ALTER COLUMN c_custkey SET DEFAULT nextval('customer_c_custkey_seq'::regclass);
+
+
+--
+-- TOC entry 1945 (class 2604 OID 257693)
+-- Name: n_nationkey; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY nation ALTER COLUMN n_nationkey SET DEFAULT nextval('nation_n_nationkey_seq'::regclass);
+
+
+--
+-- TOC entry 1946 (class 2604 OID 257694)
+-- Name: o_orderkey; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY orders ALTER COLUMN o_orderkey SET DEFAULT nextval('orders_o_orderkey_seq'::regclass);
+
+
+--
+-- TOC entry 1947 (class 2604 OID 257695)
+-- Name: p_partkey; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY part ALTER COLUMN p_partkey SET DEFAULT nextval('part_p_partkey_seq'::regclass);
+
+
+--
+-- TOC entry 1948 (class 2604 OID 257696)
+-- Name: r_regionkey; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY region ALTER COLUMN r_regionkey SET DEFAULT nextval('region_r_regionkey_seq'::regclass);
+
+
+--
+-- TOC entry 1949 (class 2604 OID 257697)
+-- Name: s_suppkey; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY supplier ALTER COLUMN s_suppkey SET DEFAULT nextval('supplier_s_suppkey_seq'::regclass);
+
+
+SET search_path = agent, pg_catalog;
+
+--
+-- TOC entry 1973 (class 2606 OID 3773643)
+-- Name: pk_tb_access_plan; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_access_plan
+    ADD CONSTRAINT pk_tb_access_plan PRIMARY KEY (wld_id, apl_id_seq);
+
+
+--
+-- TOC entry 1975 (class 2606 OID 3773645)
+-- Name: pk_tb_candidate_index; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_candidate_index
+    ADD CONSTRAINT pk_tb_candidate_index PRIMARY KEY (cid_id);
+
+
+--
+-- TOC entry 1977 (class 2606 OID 3773647)
+-- Name: pk_tb_candidate_index_column; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_candidate_index_column
+    ADD CONSTRAINT pk_tb_candidate_index_column PRIMARY KEY (cid_id, cic_column_name);
+
+
+--
+-- TOC entry 1981 (class 2606 OID 3773649)
+-- Name: pk_tb_epoque; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_epoque
+    ADD CONSTRAINT pk_tb_epoque PRIMARY KEY (epq_id);
+
+
+--
+-- TOC entry 1983 (class 2606 OID 3773651)
+-- Name: pk_tb_profits; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_profits
+    ADD CONSTRAINT pk_tb_profits PRIMARY KEY (cid_id, pro_timestamp);
+
+
+--
+-- TOC entry 1987 (class 2606 OID 3773653)
+-- Name: pk_tb_workload; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_workload
+    ADD CONSTRAINT pk_tb_workload PRIMARY KEY (wld_id);
+
+
+--
+-- TOC entry 1979 (class 2606 OID 3773655)
+-- Name: tb_cadidate_view_pkey; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_candidate_view
+    ADD CONSTRAINT tb_cadidate_view_pkey PRIMARY KEY (cmv_id);
+
+
+--
+-- TOC entry 1985 (class 2606 OID 3773657)
+-- Name: tb_task_indexes_pkey; Type: CONSTRAINT; Schema: agent; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY tb_task_indexes
+    ADD CONSTRAINT tb_task_indexes_pkey PRIMARY KEY (wld_id, cid_id);
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 1957 (class 2606 OID 257699)
+-- Name: customer_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY customer
+    ADD CONSTRAINT customer_pkey PRIMARY KEY (c_custkey);
+
+
+--
+-- TOC entry 1959 (class 2606 OID 257701)
+-- Name: lineitem_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY lineitem
+    ADD CONSTRAINT lineitem_pkey PRIMARY KEY (l_orderkey, l_linenumber);
+
+
+--
+-- TOC entry 1961 (class 2606 OID 257704)
+-- Name: nation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY nation
+    ADD CONSTRAINT nation_pkey PRIMARY KEY (n_nationkey);
+
+
+--
+-- TOC entry 1963 (class 2606 OID 257706)
+-- Name: orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY orders
+    ADD CONSTRAINT orders_pkey PRIMARY KEY (o_orderkey);
+
+
+--
+-- TOC entry 1965 (class 2606 OID 257708)
+-- Name: part_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY part
+    ADD CONSTRAINT part_pkey PRIMARY KEY (p_partkey);
+
+
+--
+-- TOC entry 1967 (class 2606 OID 257710)
+-- Name: partsupp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY partsupp
+    ADD CONSTRAINT partsupp_pkey PRIMARY KEY (ps_partkey, ps_suppkey);
+
+
+--
+-- TOC entry 1969 (class 2606 OID 257712)
+-- Name: region_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY region
+    ADD CONSTRAINT region_pkey PRIMARY KEY (r_regionkey);
+
+
+--
+-- TOC entry 1971 (class 2606 OID 257714)
+-- Name: supplier_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY supplier
+    ADD CONSTRAINT supplier_pkey PRIMARY KEY (s_suppkey);
+
+
+SET search_path = agent, pg_catalog;
+
+--
+-- TOC entry 1997 (class 2606 OID 3773658)
+-- Name: fk_cid_id; Type: FK CONSTRAINT; Schema: agent; Owner: postgres
+--
+
+ALTER TABLE ONLY tb_candidate_index_column
+    ADD CONSTRAINT fk_cid_id FOREIGN KEY (cid_id) REFERENCES tb_candidate_index(cid_id);
+
+
+--
+-- TOC entry 1996 (class 2606 OID 3773663)
+-- Name: fk_wld_id; Type: FK CONSTRAINT; Schema: agent; Owner: postgres
+--
+
+ALTER TABLE ONLY tb_access_plan
+    ADD CONSTRAINT fk_wld_id FOREIGN KEY (wld_id) REFERENCES tb_workload(wld_id);
+
+
+--
+-- TOC entry 1999 (class 2606 OID 3773668)
+-- Name: fk_wld_id; Type: FK CONSTRAINT; Schema: agent; Owner: postgres
+--
+
+ALTER TABLE ONLY tb_profits
+    ADD CONSTRAINT fk_wld_id FOREIGN KEY (wld_id) REFERENCES tb_workload(wld_id);
+
+
+--
+-- TOC entry 1998 (class 2606 OID 3773673)
+-- Name: tb_cadidate_view_fk; Type: FK CONSTRAINT; Schema: agent; Owner: postgres
+--
+
+ALTER TABLE ONLY tb_candidate_view
+    ADD CONSTRAINT tb_cadidate_view_fk FOREIGN KEY (cmv_id) REFERENCES tb_workload(wld_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2000 (class 2606 OID 3773678)
+-- Name: tb_task_indexes_cid_id_fkey; Type: FK CONSTRAINT; Schema: agent; Owner: postgres
+--
+
+ALTER TABLE ONLY tb_task_indexes
+    ADD CONSTRAINT tb_task_indexes_cid_id_fkey FOREIGN KEY (cid_id) REFERENCES tb_candidate_index(cid_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2001 (class 2606 OID 3773683)
+-- Name: tb_task_indexes_wld_id_fkey; Type: FK CONSTRAINT; Schema: agent; Owner: postgres
+--
+
+ALTER TABLE ONLY tb_task_indexes
+    ADD CONSTRAINT tb_task_indexes_wld_id_fkey FOREIGN KEY (wld_id) REFERENCES tb_workload(wld_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 1988 (class 2606 OID 257715)
+-- Name: customer_c_nationkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY customer
+    ADD CONSTRAINT customer_c_nationkey_fkey FOREIGN KEY (c_nationkey) REFERENCES nation(n_nationkey);
+
+
+--
+-- TOC entry 1989 (class 2606 OID 257720)
+-- Name: lineitem_l_orderkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY lineitem
+    ADD CONSTRAINT lineitem_l_orderkey_fkey FOREIGN KEY (l_orderkey) REFERENCES orders(o_orderkey);
+
+
+--
+-- TOC entry 1990 (class 2606 OID 257725)
+-- Name: lineitem_l_partkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY lineitem
+    ADD CONSTRAINT lineitem_l_partkey_fkey FOREIGN KEY (l_partkey, l_suppkey) REFERENCES partsupp(ps_partkey, ps_suppkey);
+
+
+--
+-- TOC entry 1991 (class 2606 OID 257730)
+-- Name: nation_n_regionkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY nation
+    ADD CONSTRAINT nation_n_regionkey_fkey FOREIGN KEY (n_regionkey) REFERENCES region(r_regionkey);
+
+
+--
+-- TOC entry 1992 (class 2606 OID 257735)
+-- Name: orders_o_custkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY orders
+    ADD CONSTRAINT orders_o_custkey_fkey FOREIGN KEY (o_custkey) REFERENCES customer(c_custkey);
+
+
+--
+-- TOC entry 1993 (class 2606 OID 257740)
+-- Name: partsupp_ps_partkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY partsupp
+    ADD CONSTRAINT partsupp_ps_partkey_fkey FOREIGN KEY (ps_partkey) REFERENCES part(p_partkey);
+
+
+--
+-- TOC entry 1994 (class 2606 OID 257745)
+-- Name: partsupp_ps_suppkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY partsupp
+    ADD CONSTRAINT partsupp_ps_suppkey_fkey FOREIGN KEY (ps_suppkey) REFERENCES supplier(s_suppkey);
+
+
+--
+-- TOC entry 1995 (class 2606 OID 257750)
+-- Name: supplier_s_nationkey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY supplier
+    ADD CONSTRAINT supplier_s_nationkey_fkey FOREIGN KEY (s_nationkey) REFERENCES nation(n_nationkey);
+
+
+--
+-- TOC entry 2122 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2015-08-13 13:43:16
+
+--
+-- PostgreSQL database dump complete
+--
+
